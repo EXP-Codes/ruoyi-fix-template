@@ -10,7 +10,7 @@ services:
       # 不在此处建库，使用 bin/init_db.sh|ps1 建库
       # MYSQL_DATABASE: ruoyi_db
       # MYSQL_USER: super_admin
-      # MYSQL_PASSWORD: 4xpC6U34LpvraiyP
+      # MYSQL_PASSWORD: YrP9BfHvDvZTQiux
     command: [ "--default-authentication-plugin=mysql_native_password", "--character-set-server=utf8mb4" ]
     volumes:
       - ./volumes/mysql/conf/docker.cnf:/etc/mysql/conf.d/docker.cnf
