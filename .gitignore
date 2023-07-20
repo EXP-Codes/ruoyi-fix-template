@@ -37,10 +37,20 @@ nbdist/
 
 ######################################################################
 # Others
-*.log
 *.xml.versionsBackup
 *.swp
 
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+
+# tmp
+__init__.py
+.env
+entry-nginx/cert
+*.log
+volumes/mysql/data
+volumes/redis/data
+volumes/share
+*.py[co]

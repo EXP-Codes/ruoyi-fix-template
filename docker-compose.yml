@@ -1,25 +1,24 @@
 version: '2'
 services:
 
-  mysql:
+  app-mysql:
     image: mysql:8.0.29
-    container_name: ruoyi-mysql
-    hostname: ruoyi-mysql
+    container_name: app-mysql
+    hostname: app-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: N8vV9modVBznVFXq
+      MYSQL_ROOT_PASSWORD: 8ZYyfjjJZdDrnwFq
       # 不在此处建库，使用 bin/init_db.sh|ps1 建库
-      # MYSQL_DATABASE: ruoyi_db
-      # MYSQL_USER: super_admin
+      # MYSQL_DATABASE: app_db
+      # MYSQL_USER: app_admin
       # MYSQL_PASSWORD: YrP9BfHvDvZTQiux
     command: [ "--default-authentication-plugin=mysql_native_password", "--character-set-server=utf8mb4" ]
     volumes:
       - ./volumes/mysql/conf/docker.cnf:/etc/mysql/conf.d/docker.cnf
       - ./volumes/mysql/data:/var/lib/mysql
-      - shared-tmp:/tmp
     ports:
       - 127.0.0.1:3306:3306
     networks:
-      ruoyi-net:
+      app-net:
         ipv4_address: 172.168.100.2
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
@@ -31,10 +30,10 @@ services:
     restart: on-failure
 
 
-  redis:
+  app-redis:
     image: redis:6.2.6
-    container_name: ruoyi-redis
-    hostname: ruoyi-redis
+    container_name: app-redis
+    hostname: app-redis
     ports:
       - 127.0.0.1:6379:6379
     volumes:
@@ -42,18 +41,18 @@ services:
       - ./volumes/redis/data:/data
     command: [ 'redis-server', '/etc/redis/redis.conf' ]
     networks:
-      ruoyi-net:
+      app-net:
         ipv4_address: 172.168.100.3
     restart: on-failure
 
-  ruoyi-app:
+  app-demo:
     build:
       context: .
       dockerfile: ./Dockerfile
       args:
-        APP_DIR: ruoyi
-        APP_JAR: ruoyi.jar
-    container_name: ruoyi-app
+        APP_DIR: app
+        APP_JAR: app.jar
+    container_name: app-app
     hostname: centos
     environment:
       - TZ=Asia/Shanghai
@@ -66,21 +65,21 @@ services:
       - CONFUSE_PWD=${CONFUSE_PWD}
       - CONFUSE_PATH=/var/lib/apt/lists/.lock
     volumes:
-      - ./logs:/var/cache/ruoyi/logs
-    # 接入 ruoyi-nginx 访问，不暴露端口
+      - ./logs:/var/cache/app/logs
+    # 接入 app-nginx 访问，不暴露端口
     # ports:
     #   - 127.0.0.1:8253:8080
     networks:
-      ruoyi-net:
+      app-net:
         ipv4_address: 172.168.100.253
     depends_on:
-      - mysql
-      - redis
+      - app-mysql
+      - app-redis
     restart: on-failure
 
 
 networks:
-  ruoyi-net:
+  app-net:
     driver: bridge
     ipam:
       driver: default
