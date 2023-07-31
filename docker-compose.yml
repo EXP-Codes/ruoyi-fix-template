@@ -7,7 +7,7 @@ services:
     hostname: app-mysql
     environment:
       MYSQL_ROOT_PASSWORD: 8ZYyfjjJZdDrnwFq
-      # 不在此处建库，使用 bin/init_db.sh|ps1 建库
+      # 不在此处建库，使用 bin/db_init.sh|ps1 建库
       # MYSQL_DATABASE: app_db
       # MYSQL_USER: app_admin
       # MYSQL_PASSWORD: YrP9BfHvDvZTQiux
@@ -45,37 +45,37 @@ services:
         ipv4_address: 172.168.100.3
     restart: on-failure
 
-  app-demo:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        APP_DIR: app
-        APP_JAR: app.jar
-    container_name: app-app
-    hostname: centos
-    environment:
-      - TZ=Asia/Shanghai
-      - LANG=zh_CN.UTF-8
-      - LANGUAGE=zh_CN.UTF-8
-      - LC_ALL=zh_CN.UTF-8
-      # 配置文件中密码的解压密码
-      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_PWD}
-      # jar 包的解密密码，maven 编译时的密码保持一致，请勿泄露给渗透测试人员或随意变更，否则无法解密
-      - CONFUSE_PWD=${CONFUSE_PWD}
-      - CONFUSE_PATH=/var/lib/apt/lists/.lock
-    volumes:
-      - ./logs:/var/cache/app/logs
-    # 接入 app-nginx 访问，不暴露端口
-    # ports:
-    #   - 127.0.0.1:8253:8080
-    networks:
-      app-net:
-        ipv4_address: 172.168.100.253
-    depends_on:
-      - app-mysql
-      - app-redis
-    restart: on-failure
+#  app-demo:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#      args:
+#        APP_DIR: app
+#        APP_JAR: app.jar
+#    container_name: app-app
+#    hostname: centos
+#    environment:
+#      - TZ=Asia/Shanghai
+#      - LANG=zh_CN.UTF-8
+#      - LANGUAGE=zh_CN.UTF-8
+#      - LC_ALL=zh_CN.UTF-8
+#      # 配置文件中密码的解压密码
+#      - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_PWD}
+#      # jar 包的解密密码，maven 编译时的密码保持一致，请勿泄露给渗透测试人员或随意变更，否则无法解密
+#      - CONFUSE_PWD=${CONFUSE_PWD}
+#      - CONFUSE_PATH=/var/lib/apt/lists/.lock
+#    volumes:
+#      - ./logs:/var/cache/app/logs
+#    # 接入 app-nginx 访问，不暴露端口
+#    # ports:
+#    #   - 127.0.0.1:8253:8080
+#    networks:
+#      app-net:
+#        ipv4_address: 172.168.100.253
+#    depends_on:
+#      - app-mysql
+#      - app-redis
+#    restart: on-failure
 
 
 networks:
